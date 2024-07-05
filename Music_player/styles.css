@@ -23,6 +23,7 @@ nav{
     display: flex;
     justify-content: space-between;
     margin-bottom: 30px;
+    position: relative;
 }
 nav .circle{
     border-radius: 50%;
@@ -32,6 +33,38 @@ nav .circle{
     background-color: #fff;
     color:#f53192;
     box-shadow: inset0 5px 10 px rgba(255,26,26 0.22);
+}
+nav .circle:hover{
+    cursor: pointer;
+}
+#volume-control-container{
+    display:none;
+    position:absolute;
+    top:60px;
+    left:-25px;
+}
+#volume-control{
+    display: block;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 70%;
+    height: 6px;
+    background-color: #f53192;
+    border-radius: 4px;
+    cursor: pointer;
+    margin:40px 0;
+    transform: rotate(270deg); 
+    transform-origin: 50% 50%;
+}
+#volume-control::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #f53192;
+    width:10px;
+    height: 10px;
+    border-radius: 50%;
+    border:8px solid #fff;
+    box-shadow: 0 5px 5px rgba(255,26,26,0.22);
 }
 .song-img{
     width:220px;
