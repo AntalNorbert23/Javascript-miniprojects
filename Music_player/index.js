@@ -9,21 +9,34 @@ const volumeControl=document.getElementById("volume-control");
 let currentSongIndex=0;
 let lastKeyTime=0;
 const doublePressDelay=300;
+let updateProgressInterval;
+
+
+function playSong() {
+    song.play().catch(error => {
+        console.log("Failed to play the song: ", error);
+    });
+    controlIcon.classList.add("fa-pause");
+    controlIcon.classList.remove("fa-play");
+    clearInterval(updateProgressInterval);
+    updateProgressInterval = setInterval(() => {
+        progress.value = song.currentTime;
+    }, 1000);
+}
+
+function stopSong(){
+    song.pause();
+    song.currentTime=0;
+    controlIcon.classList.remove("fa-pause");
+    controlIcon.classList.add("fa-play");
+    clearInterval(updateProgressInterval);
+}
 
 controlIconContainer.addEventListener('click',function(){
     if(controlIcon.classList.contains("fa-pause")){
-        song.pause();
-        controlIcon.classList.remove("fa-pause");
-        controlIcon.classList.add("fa-play");
+       stopSong();
     }else{
-        song.play();
-        if(song.play()){
-            setInterval(()=>{
-                progress.value=song.currentTime;
-            },1000)
-        }
-        controlIcon.classList.add("fa-pause");
-        controlIcon.classList.remove("fa-play");
+       playSong();
     }
 })
 
@@ -48,13 +61,13 @@ function loadSong(index){
 document.querySelector('.backward-container').addEventListener('click',()=> {
     currentSongIndex=(currentSongIndex-1+songs.length) % songs.length
     loadSong(currentSongIndex);
-    song.play();
+    playSong();
 })
 
 document.querySelector('.forward-container').addEventListener('click',()=>{
     currentSongIndex=(currentSongIndex +1) % songs.length;
     loadSong(currentSongIndex);
-    song.play();
+    playSong();
 })
 
 
@@ -82,17 +95,17 @@ document.addEventListener('keydown',(event)=>{
         if(currentTime-lastKeyTime<doublePressDelay){
             currentSongIndex=(currentSongIndex+1)%songs.length;
             loadSong(currentSongIndex);
+            playSong();
         }
         lastKeyTime=currentTime;
-        song.play();
     }else if( key === "ArrowLeft"){
         let currentTime= new Date().getTime();
         if(currentTime-lastKeyTime<doublePressDelay){
             currentSongIndex=(currentSongIndex-1+songs.length) % songs.length;
             loadSong(currentSongIndex);
+            playSong();
         }
         lastKeyTime=currentTime;
-        song.play();
     }
 
     volumeControl.value = song.volume;
