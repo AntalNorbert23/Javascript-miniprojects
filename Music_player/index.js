@@ -6,10 +6,15 @@ const controlIcon=document.getElementById("controlIcon");
 const controlIconContainer=document.getElementById("controlIconContainer");
 const volumeControlContainer=document.getElementById("volume-control-container");
 const volumeControl=document.getElementById("volume-control");
+const menuIcon = document.getElementById("menu-icon");
+const songModal = document.getElementById("songModal");
+const closeModal = document.querySelector(".close");
+const songList = document.getElementById("songList");
 let currentSongIndex=0;
 let lastKeyTime=0;
 const doublePressDelay=300;
 let updateProgressInterval;
+
 
 
 function playSong() {
@@ -111,5 +116,31 @@ document.addEventListener('keydown',(event)=>{
     volumeControl.value = song.volume;
 })
 
+
+menuIcon.addEventListener('click',()=>{
+    songModal.style.display='block';
+    songList.innerText='';
+    songs.forEach((song,index)=>{
+        const songRow=document.createElement('li');
+        songRow.textContent=song.title;
+        songRow.addEventListener('click',()=>{
+            currentSongIndex=index;
+            loadSong(currentSongIndex);
+            songModal.style.display='none';
+            playSong();
+        })
+        songList.appendChild(songRow)
+    })
+})
+
+closeModal.addEventListener('click',()=>{
+    songModal.style.display='none';
+})
+
+document.addEventListener('click',(event)=>{
+    if (event.target === songModal){
+        songModal.style.display="none";
+    }
+})
 
 loadSong(currentSongIndex);

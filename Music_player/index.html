@@ -17,7 +17,7 @@
                 <div id="volume-control-container">
                     <input type="range" id="volume-control" min="0" max="1" step="0.01" value="1">
                 </div>
-                <div class="circle">
+                <div class="circle" id="menu-icon">
                     <i class="fa fa-bars"></i>
                 </div>
             </nav>
@@ -39,6 +39,16 @@
         
         </div>
     </div>
+
+    <!-- Modal -->
+    <div id="songModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Available Songs</h2>
+            <ul id="songList"></ul>
+        </div>
+    </div>
+
     <script type="module" src="index.js"></script>
 </body>
 </html>
