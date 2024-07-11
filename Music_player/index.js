@@ -88,7 +88,7 @@ volumeControl.addEventListener('input',()=>{
     song.volume=volumeControl.value;
 })
 
-document.addEventListener('keydown',(event)=>{
+document.addEventListener('keyup',(event)=>{
     let key=event.key;
 
     if(key === "ArrowDown"){
@@ -140,6 +140,20 @@ closeModal.addEventListener('click',()=>{
 document.addEventListener('click',(event)=>{
     if (event.target === songModal){
         songModal.style.display="none";
+    }
+})
+
+
+song.addEventListener('ended',()=>{
+    currentSongIndex+=1
+
+    if(currentSongIndex>=songs.length){
+        stopSong();
+        controlIcon.classList.remove("fa-pause");
+        controlIcon.classList.add("fa-play");
+    }else{
+        loadSong(currentSongIndex);
+        playSong();
     }
 })
 
