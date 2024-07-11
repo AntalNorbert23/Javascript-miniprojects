@@ -159,7 +159,7 @@ nav .circle:hover{
     color: white; 
 }
 
-.close {
+.close,.close-search {
     color: #aaa;
     float: right;
     font-size: 28px;
@@ -167,24 +167,26 @@ nav .circle:hover{
 }
 
 .close:hover,
-.close:focus {
+.close:focus,
+.close-search:hover,
+.close-search:focus {
     color: #fff;
     text-decoration: none;
     cursor: pointer;
 }
 
-#songList {
+#songList,#searchResults  {
     list-style: none;
     padding: 0;
 }
 
-#songList li {
+#songList li,#searchResults li {
     padding: 10px;
     border-bottom: 1px solid #444;
     cursor: pointer;
 }
 
-#songList li:hover {
+#songList li:hover,#searchResults li:hover {
     background-color: #f53192; 
 }
 
@@ -197,4 +199,16 @@ nav .circle:hover{
         top: 0;
         opacity: 1;
     }
+}
+
+#search-input {
+    width: 150px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #f53192;
+    margin-left: 20px;
+    outline: none;
+}
+#search-input:focus {
+    border: 1px solid #f4b7d5;
 }

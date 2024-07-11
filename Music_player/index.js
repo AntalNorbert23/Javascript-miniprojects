@@ -10,13 +10,17 @@ const menuIcon = document.getElementById("menu-icon");
 const songModal = document.getElementById("songModal");
 const closeModal = document.querySelector(".close");
 const songList = document.getElementById("songList");
+const searchResults = document.getElementById("searchResults");
+const searchInput = document.getElementById("search-input");
+const searchModal = document.getElementById("searchModal");
+const closeSearchModal = document.querySelector(".close-search");
 let currentSongIndex=0;
 let lastKeyTime=0;
 const doublePressDelay=300;
 let updateProgressInterval;
 
 
-
+//function to play the song 
 function playSong() {
     song.play().catch(error => {
         console.log("Failed to play the song: ", error);
@@ -29,6 +33,7 @@ function playSong() {
     }, 1000);
 }
 
+//function to stop the song
 function stopSong(){
     song.pause();
     song.currentTime=0;
@@ -37,6 +42,7 @@ function stopSong(){
     clearInterval(updateProgressInterval);
 }
 
+//play-stop music click event listener
 controlIconContainer.addEventListener('click',function(){
     if(controlIcon.classList.contains("fa-pause")){
        stopSong();
@@ -45,12 +51,13 @@ controlIconContainer.addEventListener('click',function(){
     }
 })
 
-
+//progress value increasing
 progress.onchange=function(){
     song.play();
     song.currentTime=progress.value;
 }
 
+//load the song to display it
 function loadSong(index){
     const songData=songs[index];
     document.querySelector('.song-title').textContent = songData.title;
@@ -63,19 +70,21 @@ function loadSong(index){
     }
 }
 
+//previous music button event listener
 document.querySelector('.backward-container').addEventListener('click',()=> {
     currentSongIndex=(currentSongIndex-1+songs.length) % songs.length
     loadSong(currentSongIndex);
     playSong();
 })
 
+//next music event listener
 document.querySelector('.forward-container').addEventListener('click',()=>{
     currentSongIndex=(currentSongIndex +1) % songs.length;
     loadSong(currentSongIndex);
     playSong();
 })
 
-
+//volume controller open-close
 document.querySelector(".circle-left").addEventListener('click',()=>{
     if(volumeControlContainer.style.display ==="none"){
         volumeControlContainer.style.display="block";
@@ -84,10 +93,12 @@ document.querySelector(".circle-left").addEventListener('click',()=>{
     }
 })
 
+//adjust volume event listener
 volumeControl.addEventListener('input',()=>{
     song.volume=volumeControl.value;
 })
 
+//event listeners for -previous,next music and up/down music volume
 document.addEventListener('keyup',(event)=>{
     let key=event.key;
 
@@ -116,10 +127,11 @@ document.addEventListener('keyup',(event)=>{
     volumeControl.value = song.volume;
 })
 
-
+//event listener to open the music menu 
 menuIcon.addEventListener('click',()=>{
     songModal.style.display='block';
     songList.innerText='';
+    //for each song create a list element and on clicked play the song by loading it
     songs.forEach((song,index)=>{
         const songRow=document.createElement('li');
         songRow.textContent=song.title;
@@ -129,31 +141,95 @@ menuIcon.addEventListener('click',()=>{
             songModal.style.display='none';
             playSong();
         })
-        songList.appendChild(songRow)
+        songList.appendChild(songRow);
     })
 })
 
+//clicking on the X closes the song list modal
 closeModal.addEventListener('click',()=>{
     songModal.style.display='none';
 })
 
+//clicking outside of the music list closes the list modal
 document.addEventListener('click',(event)=>{
     if (event.target === songModal){
         songModal.style.display="none";
     }
 })
 
-
+//autoplay song and auto-stop song at the end of playlist
 song.addEventListener('ended',()=>{
     currentSongIndex+=1
-
+    //auto stop
     if(currentSongIndex>=songs.length){
         stopSong();
         controlIcon.classList.remove("fa-pause");
         controlIcon.classList.add("fa-play");
     }else{
+        //autoplay
         loadSong(currentSongIndex);
         playSong();
+    }
+})
+
+//function for play the searched music
+function playSearchResult(result) {
+    song.src = result.previewUrl;
+    document.querySelector('.song-title').textContent = result.trackName;
+    document.querySelector('.artist').textContent = result.artistName;
+    document.querySelector('.song-img').src = result.artworkUrl100;
+    searchModal.style.display = 'none';
+    playSong();
+}
+
+//function to display the searched music 
+function displaySearchResults(results){
+    searchResults.innerText='';
+    results.forEach(result=>{
+        const music=document.createElement('li');
+        music.textContent=result.trackName;
+        music.addEventListener('click',()=>{
+            playSearchResult(result);
+        })
+        searchResults.appendChild(music);
+    })
+    searchModal.style.display = 'block';
+}
+
+//fetch music data from the itunes api
+async function searchMusic(query){
+    const url=`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=10`
+
+    try{
+        const response=await fetch(url);
+        const data=await response.json();
+        const results=data.results;
+        displaySearchResults(results);
+    }catch(error){
+        console.error('Error fetching musics:', error);
+    }
+}
+
+//search and fetch music on enter keydown
+searchInput.addEventListener('keydown',(event)=>{
+    if(event.key === 'Enter'){
+        const query=searchInput.value.trim();
+        if(query){
+            searchMusic(query);
+            searchInput.value='';
+        }
+    }
+})
+
+//clicking on the X closes the song list modal
+closeSearchModal.addEventListener('click',()=>{
+    searchModal.style.display="none";
+})
+
+//clicking outside of the music list closes the list modal
+document.addEventListener('click',(event)=>{
+    if(event.target === searchModal){
+        searchModal.style.display='none';
     }
 })
 

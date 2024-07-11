@@ -17,6 +17,7 @@
                 <div id="volume-control-container">
                     <input type="range" id="volume-control" min="0" max="1" step="0.01" value="1">
                 </div>
+                <input type="text" id="search-input" placeholder="Search music">
                 <div class="circle" id="menu-icon">
                     <i class="fa fa-bars"></i>
                 </div>
@@ -46,6 +47,15 @@
             <span class="close">&times;</span>
             <h2>Available Songs</h2>
             <ul id="songList"></ul>
+        </div>
+    </div>
+
+     <!-- Search Modal -->
+     <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close-search">&times;</span>
+            <h2>Search Results</h2>
+            <ul id="searchResults"></ul>
         </div>
     </div>
 
