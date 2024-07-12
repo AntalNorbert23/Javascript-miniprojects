@@ -20,6 +20,9 @@ const doublePressDelay=300;
 let updateProgressInterval;
 
 
+let isRewinding=false;
+let rewindInterval;
+
 //function to play the song 
 function playSong() {
     song.play().catch(error => {
@@ -36,7 +39,7 @@ function playSong() {
 //function to stop the song
 function stopSong(){
     song.pause();
-    song.currentTime=0;
+    song.currentTime=progress.value;
     controlIcon.classList.remove("fa-pause");
     controlIcon.classList.add("fa-play");
     clearInterval(updateProgressInterval);
@@ -232,5 +235,29 @@ document.addEventListener('click',(event)=>{
         searchModal.style.display='none';
     }
 })
+
+document.addEventListener('keydown',(event)=>{
+    event.preventDefault()
+    console.log(event.key)
+    if(event.key === 'Backspace' && !isRewinding){
+        isRewinding=true;
+        rewindInterval=setInterval(()=>{
+            song.currentTime=Math.max(0,song.currentTime-0.9);
+        },100);
+    }else if(event.key === 'Tab' && !isRewinding){
+        isRewinding=true;
+        rewindInterval=setInterval(()=>{
+            song.currentTime=Math.min(song.duration,song.currentTime+0.9);
+        },100);
+    }
+})
+
+document.addEventListener('keyup', (event) => {
+    if ((event.key === 'Backspace' || event.key === 'Tab') && isRewinding) {
+        isRewinding = false;
+        clearInterval(rewindInterval);
+    }
+});
+
 
 loadSong(currentSongIndex);
