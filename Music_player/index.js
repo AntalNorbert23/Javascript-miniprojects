@@ -18,6 +18,7 @@ let currentSongIndex=0;
 let lastKeyTime=0;
 const doublePressDelay=300;
 let updateProgressInterval;
+const isLoading=false;
 
 
 let isRewinding=false;
@@ -54,11 +55,26 @@ controlIconContainer.addEventListener('click',function(){
     }
 })
 
-//progress value increasing
-progress.onchange=function(){
-    song.play();
-    song.currentTime=progress.value;
+function updateProgressBar(){
+    progress.value = song.currentTime;
+    if (song.paused) {
+        controlIcon.classList.remove("fa-pause");
+        controlIcon.classList.add("fa-play");
+    } else {
+        controlIcon.classList.add("fa-pause");
+        controlIcon.classList.remove("fa-play");
+    }
 }
+
+//progress value increasing
+progress.onchange = function() {
+    song.currentTime = progress.value;
+    if (song.paused) {
+        playSong();
+    } else {
+        updateProgressBar();
+    }
+};
 
 //load the song to display it
 function loadSong(index){
@@ -125,6 +141,13 @@ document.addEventListener('keyup',(event)=>{
             playSong();
         }
         lastKeyTime=currentTime;
+    }else if (event.code === "Space"){
+        if (song.paused){
+            playSong();
+        }else{
+            stopSong();
+        }
+       
     }
 
     volumeControl.value = song.volume;
@@ -249,7 +272,7 @@ document.addEventListener('keydown',(event)=>{
         rewindInterval=setInterval(()=>{
             song.currentTime=Math.min(song.duration,song.currentTime+0.9);
         },100);
-    }
+    }  
 })
 
 document.addEventListener('keyup', (event) => {
