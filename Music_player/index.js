@@ -18,8 +18,9 @@ let currentSongIndex=0;
 let lastKeyTime=0;
 const doublePressDelay=300;
 let updateProgressInterval;
-const isLoading=false;
 
+const loader = document.getElementById('loader');
+const loadingOverlay=document.getElementById('loadingOverlay');
 
 let isRewinding=false;
 let rewindInterval;
@@ -210,6 +211,7 @@ function playSearchResult(result) {
 
 //function to display the searched music 
 function displaySearchResults(results){
+    loadingOverlay.style.display='none';
     searchResults.innerText='';
     results.forEach(result=>{
         const music=document.createElement('li');
@@ -225,7 +227,8 @@ function displaySearchResults(results){
 //fetch music data from the itunes api
 async function searchMusic(query){
     const url=`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=10`
-
+    loadingOverlay.style.display = 'flex';
+    
     try{
         const response=await fetch(url);
         const data=await response.json();
@@ -233,6 +236,7 @@ async function searchMusic(query){
         displaySearchResults(results);
     }catch(error){
         console.error('Error fetching musics:', error);
+        loadingOverlay.style.display='none';
     }
 }
 
@@ -260,7 +264,6 @@ document.addEventListener('click',(event)=>{
 })
 
 document.addEventListener('keydown',(event)=>{
-    event.preventDefault()
     console.log(event.key)
     if(event.key === 'Backspace' && !isRewinding){
         isRewinding=true;
